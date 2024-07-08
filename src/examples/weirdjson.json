@@ -1,0 +1,54 @@
+{"this is": [{
+    "a": "weird",
+      "json": "file","with": {
+  "nested": "objects",
+    "and": [123, 456, 789]
+    },"withw": {
+  "nested": "objects",
+    "and": [123, 456, 789]
+    },"wit2h": {
+  "nested": "objects",
+    "and": [123, 456, 789],"with": {
+  "nested": "objects",
+    "and": [123, 456, 789],"with": {
+  "nested": "objects",
+    "and": [123, 456, 789],"with": {
+  "nested": "objects",
+    "and": [123, 456, 789, {
+    "nested": "objects",
+      "and": [123, 456, 789],"with": {
+  "nested": "objects",
+    "and": [123, 456, 789, {
+    "nested": "objects",
+      "and": [123, 456, 789],"with": {
+  "nested": "objects",
+    "and": [123, 456, 789, {
+    "nested": "objects",
+      "and": [123, 456, 789],"with": {
+  "nested": "objects",
+    "and": [123, 456, 789, {
+    "nested": "objects",
+      "and": [123, 456, 789],"with": {
+  "nested": "objects",
+    "and": [123, 456, 789, {
+    "nested": "objects",
+      "and": [123, 456, 789]
+    }]
+    }
+    }]
+    }
+    }]
+    }
+    }]
+    }
+    }]
+    }
+    }
+    }
+    }
+}
+
+]
+
+}
+

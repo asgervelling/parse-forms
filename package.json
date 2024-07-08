@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "tsc && jest",
-    "json": "tsc && node dist/json.js"
+    "json": "tsc && node dist/json.js",
+    "example:formatJson": "tsc && node dist/examples/formatJson.js"
   },
   "keywords": [],
   "author": "",
