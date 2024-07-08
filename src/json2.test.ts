@@ -79,3 +79,61 @@ describe("parseBool", () => {
     expect(result.isError).toBe(true);
   });
 });
+
+const asJSONNumber = (value: string): JSONValue => ({
+  type: "number",
+  value: Number(value),
+});
+
+describe("parseFloat", () => {
+  test("successfully parses a positive float", () => {
+    const result = parseFloat.run(`123.456`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("123.456"));
+  });
+  test("successfully parses a negative float", () => {
+    const result = parseFloat.run(`-123.456`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("-123.456"));
+  });
+  test("fails to parse a float without a decimal", () => {
+    const result = parseFloat.run(`0`);
+    expect(result.isError).toBe(true);
+  });
+});
+
+describe("parseInt", () => {
+  test("successfully parses a positive integer", () => {
+    const result = parseInt.run(`123`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("123"));
+  });
+  test("successfully parses a negative integer", () => {
+    const result = parseInt.run(`-123`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("-123"));
+  });
+  test("fails to parse a float (parses the int before the decimal point)", () => {
+    const result = parseInt.run(`123.456`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("123"));
+  });
+});
+
+describe("parseScientificForm", () => {
+  test("successfully parses a positive float in scientific notation", () => {
+    const result = parseScientificForm.run(`1.23456e2`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("1.23456e2"));
+  });
+  test("successfully parses a negative float in scientific notation", () => {
+    const result = parseScientificForm.run(`-1.23456e2`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("-1.23456e2"));
+  });
+  test("successfully parses a positive integer in scientific notation", () => {
+    const result = parseScientificForm.run(`1e3`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("1e3"));
+  });
+  test("successfully parses a negative integer in scientific notation", () => {
+    const result = parseScientificForm.run(`-1e3`);
+    expect(asSuccess(result).result).toEqual(asJSONNumber("-1e3"));
+  });
+  test("fails to parse a float without a decimal", () => {
+    const result = parseScientificForm.run(`0`);
+    expect(result.isError).toBe(true);
+  });
+});

@@ -53,22 +53,29 @@ export const parseBool = choice([str("true"), str("false")]).map((x) =>
 
 export const plusOrMinus = anyOfString("+-");
 
+const asJSONNumber = (value: number): JSONValue => ({
+  type: "number",
+  value: value,
+});
+
 export const parseFloat = sequenceOf([
   orEmptyString(plusOrMinus),
   digits,
   char("."),
   digits,
-]).map((x) => x.join(""));
+]).map((x) => asJSONNumber(Number(x.join(""))));
 
 export const parseInt = sequenceOf([orEmptyString(plusOrMinus), digits]).map(
-  (x) => Number(x.join(""))
+  (x) => asJSONNumber(Number(x.join("")))
 );
 
 export const parseScientificForm = sequenceOf([
-  choice([parseFloat, parseInt]),
+  choice([parseFloat, parseInt]).map((x) => x.value),
   anyOfString("eE"),
-  choice([parseFloat, parseInt]),
-]).map((x) => x.join(""));
+  choice([parseFloat, parseInt]).map((x) => x.value),
+]).map((x) => asJSONNumber(Number(x.join(""))));
+
+console.log(parseScientificForm.run("-1e3"));
 
 export const parseNumber = choice([parseScientificForm, parseFloat, parseInt]);
 
