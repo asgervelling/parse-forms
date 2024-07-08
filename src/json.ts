@@ -39,3 +39,10 @@ export const parseBool = choice([str("true"), str("false")]).map((x) =>
 );
 
 export const plusOrMinus = anyOfString("+-");
+
+export const parseFloat = sequenceOf([
+  orEmptyString(plusOrMinus),
+  digits,
+  char("."),
+  digits,
+]).map((x) => x.join(""));
