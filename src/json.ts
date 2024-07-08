@@ -22,7 +22,7 @@ import {
   KeyValuePair,
   StringType,
   StringValue,
-} from "./discUnExperiment";
+} from "./jsonTypes";
 
 export const parseJsonValue = recursiveParser(() =>
   choice([
@@ -114,21 +114,14 @@ export const parseArray = between(whitespaceSurrounded(char("[")))(
   )
 );
 
-// Example usage of parseArray
-// console.log(JSON.stringify(parseArray.run(`[]`), null, 2));
-
 export const keyValueSeparator = whitespaceSurrounded(char(":"));
 
-// Not tested. Needs a map function and I'm unsure which
 export const parseKeyValue = whitespaceSurrounded(
   sequenceOf([parseString, keyValueSeparator, parseJsonValue]).map((x) => {
     const [key, _, value] = x as [StringValue, string, JSONValue];
     return { [key.value]: value } as KeyValuePair;
   })
 );
-
-// Example of parseKeyValue
-// console.log(JSON.stringify(parseKeyValue.run(`"key": 2`), null, 2));
 
 export const asJSONObject = (keyValuePairs: KeyValuePair[]): JSONValue => {
   const objValue: Record<string, JSONValue> = {};
@@ -149,16 +142,3 @@ export const parseObject = between(whitespaceSurrounded(char("{")))(
     return asJSONObject(keyValuePairs as KeyValuePair[]);
   })
 );
-
-// Example usage of the JSON parser
-// const json = `{
-//   "name": "John Doe",
-//   "age": 30,
-//   "cars": {
-//     "car1": "Ford",
-//     "car2": "BMW",
-//     "car3": "Fiat"
-//   }
-// }`;
-// const result = parseObject.run(json);
-// console.log(JSON.stringify(result, null, 2));

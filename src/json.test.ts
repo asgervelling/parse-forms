@@ -19,7 +19,7 @@ import {
   parseObject,
 } from "./json";
 import { ResultType, str } from "arcsecond";
-import { JSONValue } from "./discUnExperiment";
+import { JSONValue } from "./jsonTypes";
 
 function asSuccess<T, E, D>(parseResult: ResultType<T, E, D>) {
   if (!parseResult.isError) {
