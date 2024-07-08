@@ -6,7 +6,6 @@ import {
   possibly,
   sepBy,
   many,
-  anythingExcept,
   digits,
   optionalWhitespace,
   between,
@@ -14,7 +13,6 @@ import {
   recursiveParser,
   anyCharExcept,
   Parser,
-  letters,
 } from "arcsecond";
 import { JSONValue, KeyValuePair, StringValue } from "./jsonTypes";
 import {
