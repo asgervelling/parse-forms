@@ -96,6 +96,10 @@ describe("whiteSpaceSurrounded", () => {
 });
 
 describe("commaSeparated", () => {
+  test("handles empty arrays", () => {
+    const result = commaSeparated(parseString).run(` `);
+    expect(asSuccess(result).result).toEqual([]);
+  });
   test("successfully parses comma separated strings", () => {
     const result = commaSeparated(parseString).run(`"hello","world"`);
     expect(asSuccess(result).result).toEqual(["hello", "world"]);

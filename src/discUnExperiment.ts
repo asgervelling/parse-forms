@@ -15,7 +15,9 @@ export type ArrayValue = {
   value: JSONValue[];
 };
 
-type ObjectValue = {
+export type KeyValuePair = { [key: string]: JSONValue };
+
+export type ObjectValue = {
   type: "object";
   value: Record<string, JSONValue>;
 };
@@ -37,6 +39,7 @@ const nullArrayValue: ArrayValue = {
   type: "array",
   value: [{ type: "null", value: null }],
 };
+
 const recursiveJsonValue: JSONValue = {
   type: "object",
   value: {

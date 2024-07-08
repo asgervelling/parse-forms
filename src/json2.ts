@@ -19,6 +19,7 @@ import {
 import {
   ArrayValue,
   JSONValue,
+  KeyValuePair,
   StringType,
   StringValue,
 } from "./discUnExperiment";
@@ -30,7 +31,7 @@ export const parseJsonValue = recursiveParser(() =>
     parseNull,
     parseString,
     parseArray,
-    parseObject,
+    // parseObject,
   ])
 );
 
@@ -103,30 +104,19 @@ export const parseNull = str("null").map(() => jsonNull);
 export const parseArray = between(whitespaceSurrounded(char("[")))(
   whitespaceSurrounded(char("]"))
 )(
-  commaSeparated(
-    parseJsonValue.map((x) => {
-      const values = x as JSONValue[];
-      return values;
-    })
-  ).map(
-    (x) =>
+  possibly(commaSeparated(parseJsonValue)).map(
+    (result) =>
       ({
         type: "array",
-        value: x,
+        value: result || [],
       } as JSONValue)
   )
 );
-
+// the implementation above cannot handle empty arrays
 // Example usage of parseArray
-// console.log(parseArray.run(`[1, 2, 3]`));
-const result = parseArray.run('[1, "hello", [1, 2, 3]]');
-if (!result.isError) {
-  console.log(JSON.stringify(result.result, null, 2));
-}
+// console.log(JSON.stringify(parseArray.run(`[]`), null, 2));
 
 export const keyValueSeparator = whitespaceSurrounded(char(":"));
-
-type KeyValuePair = { [key: string]: JSONValue };
 
 // Not tested. Needs a map function and I'm unsure which
 export const parseKeyValue = whitespaceSurrounded(
@@ -136,32 +126,30 @@ export const parseKeyValue = whitespaceSurrounded(
   })
 );
 
-// Example usage of parseKeyValue
-// console.log(parseKeyValue.run(`"key": "value"`));
+// Example of parseKeyValue
+// console.log(JSON.stringify(parseKeyValue.run(`"key": 2`), null, 2));
 
-/* 
-.map((x) => {
-  const [key, _, value] = x as string[];
-  return { [key]: value };
-});
-*/
-
-export const parseObject = between(whitespaceSurrounded(char("{")))(
-  whitespaceSurrounded(char("}"))
-)(commaSeparated(parseKeyValue)).map((x) => {
-  const keyValuePairs = x as KeyValuePair[];
-  const object: JSONValue = {
+export const asJSONObject = (keyValuePairs: KeyValuePair[]): JSONValue => {
+  const objValue: Record<string, JSONValue> = {};
+  keyValuePairs.forEach((kv) => {
+    const key = Object.keys(kv)[0];
+    objValue[key] = kv[key];
+  });
+  return {
     type: "object",
-    value: Object.assign({}, ...keyValuePairs),
-  };
-  return object;
-});
+    value: objValue,
+  } as JSONValue;
+};
+
+export const parseObject = between(
+  whitespaceSurrounded(char("{")) // First part of between, wrapped in whitespaceSurrounded
+)(
+  whitespaceSurrounded(char("}")) // Second part of between, wrapped in whitespaceSurrounded
+)(
+  commaSeparated(parseKeyValue).map((keyValuePairs) => {
+    return asJSONObject(keyValuePairs as KeyValuePair[]);
+  })
+);
 
 // Example usage of parseObject
-// const result = parseObject.run(`{"myKey": "My value"}`);
-// if (!result.isError) {
-//   console.log(JSON.stringify(result.result, null, 2));
-// }
-
-// Example usage of parseJsonValue
-// console.log(parseJsonValue.run(`"hello"`));
+// console.log(JSON.stringify(parseObject.run(`{"key": 2}`), null, 2));
