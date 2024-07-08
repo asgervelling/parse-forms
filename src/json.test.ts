@@ -23,8 +23,7 @@ function asSuccess<T, E, D>(parseResult: ResultType<T, E, D>) {
   } else {
     console.log("Failing:");
     console.log(parseResult);
-    const error = parseResult.error as string;
-    throw new Error(error);
+    throw parseResult.error;
   }
 }
 
