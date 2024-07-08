@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "tsc && jest",
-    "json": "tsc && node dist/json.js"
+    "json": "tsc && node dist/json.js",
+    "json2": "tsc && node dist/json2.js"
   },
   "keywords": [],
   "author": "",

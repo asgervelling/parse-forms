@@ -97,19 +97,3 @@ export const parseKeyValue = whitespaceSurrounded(
 export const parseObject = between(whitespaceSurrounded(char("{")))(
   whitespaceSurrounded(char("}"))
 )(commaSeparated(parseKeyValue));
-
-// Example usage of the JSON parser
-const json = `{
-  "name": "John Doe",
-  "age": 30,
-  "isStudent": false,
-  "grades": [90, 80, 85],
-  "address": {
-    "street": "123 Main St",
-    "city": "Springfield",
-    "state": "IL"
-  }
-}`;
-
-const result = parseObject.run(json);
-console.log(result);
