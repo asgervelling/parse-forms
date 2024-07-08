@@ -42,8 +42,13 @@ export const whitespaceSurrounded =
 
 export const commaSeparated = sepBy(whitespaceSurrounded(char(",")));
 
+const asJSONBool = (value: boolean): JSONValue => ({
+  type: "boolean",
+  value: value,
+});
+
 export const parseBool = choice([str("true"), str("false")]).map((x) =>
-  x === "true" ? true : false
+  x === "true" ? asJSONBool(true) : asJSONBool(false)
 );
 
 export const plusOrMinus = anyOfString("+-");
