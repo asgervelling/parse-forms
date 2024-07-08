@@ -16,7 +16,23 @@ import {
   Parser,
   letters,
 } from "arcsecond";
-import { JSONValue, StringType } from "./discUnExperiment";
+import {
+  ArrayValue,
+  JSONValue,
+  StringType,
+  StringValue,
+} from "./discUnExperiment";
+
+export const parseJsonValue = recursiveParser(() =>
+  choice([
+    parseNumber,
+    parseBool,
+    parseNull,
+    parseString,
+    parseArray,
+    parseObject,
+  ])
+);
 
 export const escapedQuote = sequenceOf([str("\\"), anyOfString(`"'`)]).map(
   (x) => x.join("")
@@ -84,31 +100,68 @@ const jsonNull: JSONValue = {
 
 export const parseNull = str("null").map(() => jsonNull);
 
-const parseJsonValue = recursiveParser(() =>
-  choice([
-    parseNumber,
-    parseBool,
-    parseNull,
-    parseString,
-    parseArray,
-    parseObject,
-  ])
-);
-
 export const parseArray = between(whitespaceSurrounded(char("[")))(
   whitespaceSurrounded(char("]"))
-)(commaSeparated(parseJsonValue));
+)(
+  commaSeparated(
+    parseJsonValue.map((x) => {
+      const values = x as JSONValue[];
+      return values;
+    })
+  ).map(
+    (x) =>
+      ({
+        type: "array",
+        value: x,
+      } as JSONValue)
+  )
+);
+
+// Example usage of parseArray
+// console.log(parseArray.run(`[1, 2, 3]`));
+const result = parseArray.run('[1, "hello", [1, 2, 3]]');
+if (!result.isError) {
+  console.log(JSON.stringify(result.result, null, 2));
+}
 
 export const keyValueSeparator = whitespaceSurrounded(char(":"));
 
+type KeyValuePair = { [key: string]: JSONValue };
+
 // Not tested. Needs a map function and I'm unsure which
 export const parseKeyValue = whitespaceSurrounded(
-  sequenceOf([parseString, keyValueSeparator, parseJsonValue])
-).map((x) => {
+  sequenceOf([parseString, keyValueSeparator, parseJsonValue]).map((x) => {
+    const [key, _, value] = x as [StringValue, string, JSONValue];
+    return { [key.value]: value } as KeyValuePair;
+  })
+);
+
+// Example usage of parseKeyValue
+// console.log(parseKeyValue.run(`"key": "value"`));
+
+/* 
+.map((x) => {
   const [key, _, value] = x as string[];
   return { [key]: value };
 });
+*/
 
 export const parseObject = between(whitespaceSurrounded(char("{")))(
   whitespaceSurrounded(char("}"))
-)(commaSeparated(parseKeyValue));
+)(commaSeparated(parseKeyValue)).map((x) => {
+  const keyValuePairs = x as KeyValuePair[];
+  const object: JSONValue = {
+    type: "object",
+    value: Object.assign({}, ...keyValuePairs),
+  };
+  return object;
+});
+
+// Example usage of parseObject
+// const result = parseObject.run(`{"myKey": "My value"}`);
+// if (!result.isError) {
+//   console.log(JSON.stringify(result.result, null, 2));
+// }
+
+// Example usage of parseJsonValue
+// console.log(parseJsonValue.run(`"hello"`));

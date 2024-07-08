@@ -3,13 +3,14 @@ export type BooleanType = { type: "boolean" };
 export type NullType = { type: "null" };
 export type StringType = { type: "string" };
 
-type PrimitiveValue =
-  | (NumberType & { value: number })
-  | (BooleanType & { value: boolean })
-  | (NullType & { value: null })
-  | (StringType & { value: string });
+export type NumberValue = NumberType & { value: number };
+export type BooleanValue = BooleanType & { value: boolean };
+export type NullValue = NullType & { value: null };
+export type StringValue = StringType & { value: string };
 
-type ArrayValue = {
+type PrimitiveValue = NumberValue | BooleanValue | NullValue | StringValue;
+
+export type ArrayValue = {
   type: "array";
   value: JSONValue[];
 };

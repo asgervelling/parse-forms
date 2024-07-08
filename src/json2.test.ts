@@ -15,7 +15,14 @@ import {
   parseArray,
   keyValueSeparator,
 } from "./json2";
-import { ResultType, str } from "arcsecond";
+import {
+  char,
+  choice,
+  optionalWhitespace,
+  ResultType,
+  sequenceOf,
+  str,
+} from "arcsecond";
 import { JSONValue } from "./discUnExperiment";
 
 function asSuccess<T, E, D>(parseResult: ResultType<T, E, D>) {
@@ -189,3 +196,36 @@ describe("parseNull", () => {
     expect(result.isError).toBe(true);
   });
 });
+
+// describe("parseArray", () => {
+//   test("successfully parses an empty array", () => {
+//     const result = parseArray.run(`[]`);
+//     expect(asSuccess(result).result).toEqual([]);
+//   });
+//   test("successfully parses an array with a single element", () => {
+//     const result = parseArray.run(`["hello"]`);
+//     expect(asSuccess(result).result).toEqual([
+//       { type: "string", value: "hello" },
+//     ]);
+//   });
+//   test("successfully parses an array with multiple elements", () => {
+//     const result = parseArray.run(`["hello", "world"]`);
+//     expect(asSuccess(result).result).toEqual({
+//       type: "array",
+//       value: [
+//         { type: "string", value: "hello" },
+//         { type: "string", value: "world" },
+//       ],
+//     } as JSONValue);
+//   });
+//   test("successfully parses an array with whitespace", () => {
+//     const result = parseArray.run(`[ "hello" , "world" ]`);
+//     expect(asSuccess(result).result).toEqual({
+//       type: "array",
+//       value: [
+//         { type: "string", value: "hello" },
+//         { type: "string", value: "world" },
+//       ],
+//     } as JSONValue);
+//   });
+// });
