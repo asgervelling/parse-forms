@@ -50,3 +50,11 @@ export const parseFloat = sequenceOf([
 export const parseInt = sequenceOf([orEmptyString(plusOrMinus), digits]).map(
   (x) => x.join("")
 );
+
+export const parseScientificForm = sequenceOf([
+  choice([parseFloat, parseInt]),
+  anyOfString("eE"),
+  choice([parseFloat, parseInt]),
+]).map((x) => x.join(""));
+
+export const parseNumber = choice([parseScientificForm, parseFloat, parseInt]);
