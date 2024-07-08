@@ -75,11 +75,14 @@ export const parseScientificForm = sequenceOf([
   choice([parseFloat, parseInt]).map((x) => x.value),
 ]).map((x) => asJSONNumber(Number(x.join(""))));
 
-console.log(parseScientificForm.run("-1e3"));
-
 export const parseNumber = choice([parseScientificForm, parseFloat, parseInt]);
 
-export const parseNull = str("null").map((x) => null);
+const jsonNull: JSONValue = {
+  type: "null",
+  value: null,
+};
+
+export const parseNull = str("null").map(() => jsonNull);
 
 const parseJsonValue = recursiveParser(() =>
   choice([

@@ -172,3 +172,20 @@ describe("parseNumber", () => {
     expect(asSuccess(result).result).toEqual(asJSONNumber("-123e789"));
   });
 });
+
+describe("parseNull", () => {
+  const jsonNull: JSONValue = {
+    type: "null",
+    value: null,
+  };
+
+  test("successfully parses null", () => {
+    const result = parseNull.run(`null`);
+    console.log(result);
+    expect(asSuccess(result).result).toEqual(jsonNull);
+  });
+  test("fails to parse anything other than null", () => {
+    const result = parseNull.run(`hello`);
+    expect(result.isError).toBe(true);
+  });
+});
