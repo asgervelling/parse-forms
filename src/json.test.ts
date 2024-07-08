@@ -5,6 +5,7 @@ import {
   parseString,
   whitespaceSurrounded,
   commaSeparated,
+  parseBool,
 } from "./json";
 import { anyChar, ResultType, str } from "arcsecond";
 
@@ -95,5 +96,20 @@ describe("commaSeparated", () => {
   test("successfully parses comma separated strings with whitespace", () => {
     const result = commaSeparated(parseString).run(`"hello" , "world"`);
     expect(asSuccess(result).result).toEqual(["hello", "world"]);
+  });
+});
+
+describe("parseBool", () => {
+  test("successfully parses true", () => {
+    const result = parseBool.run(`true`);
+    expect(asSuccess(result).result).toEqual(true);
+  });
+  test("successfully parses false", () => {
+    const result = parseBool.run(`false`);
+    expect(asSuccess(result).result).toEqual(false);
+  });
+  test("fails to parse anything other than true or false", () => {
+    const result = parseBool.run(`hello`);
+    expect(result.isError).toBe(true);
   });
 });

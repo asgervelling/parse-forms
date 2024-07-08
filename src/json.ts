@@ -33,3 +33,7 @@ export const whitespaceSurrounded =
   between(optionalWhitespace)(optionalWhitespace);
 
 export const commaSeparated = sepBy(whitespaceSurrounded(char(",")));
+
+export const parseBool = choice([str("true"), str("false")]).map((x) =>
+  x === "true" ? true : false
+);
