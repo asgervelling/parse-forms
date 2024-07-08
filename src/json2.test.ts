@@ -15,6 +15,7 @@ import {
   parseArray,
   keyValueSeparator,
   asJSONObject,
+  asJSONArray,
 } from "./json2";
 import {
   char,
@@ -201,7 +202,7 @@ describe("parseNull", () => {
 describe("parseArray", () => {
   test("successfully parses an empty array", () => {
     const result = parseArray.run(`[]`);
-    expect(asSuccess(result).result).toEqual(asJSONObject([]));
+    expect(asSuccess(result).result).toEqual(asJSONArray([]));
   });
   // test("successfully parses an array with a single element", () => {
   //   const result = parseArray.run(`["hello"]`);

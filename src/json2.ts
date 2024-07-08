@@ -101,20 +101,21 @@ const jsonNull: JSONValue = {
 
 export const parseNull = str("null").map(() => jsonNull);
 
+export const asJSONArray = (values: JSONValue[]): JSONValue => ({
+  type: "array",
+  value: values.length > 0 ? values : [],
+});
+
 export const parseArray = between(whitespaceSurrounded(char("[")))(
   whitespaceSurrounded(char("]"))
 )(
-  possibly(commaSeparated(parseJsonValue)).map(
-    (result) =>
-      ({
-        type: "array",
-        value: result || [],
-      } as JSONValue)
+  possibly(commaSeparated(parseJsonValue)).map((x) =>
+    asJSONArray(x ? (x as JSONValue[]) : ([] as JSONValue[]))
   )
 );
 // the implementation above cannot handle empty arrays
 // Example usage of parseArray
-// console.log(JSON.stringify(parseArray.run(`[]`), null, 2));
+console.log(JSON.stringify(parseArray.run(`[]`), null, 2));
 
 export const keyValueSeparator = whitespaceSurrounded(char(":"));
 
