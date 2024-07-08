@@ -1,9 +1,7 @@
-type NumberType = { type: "number" };
-type BooleanType = { type: "boolean" };
-type NullType = { type: "null" };
-type StringType = { type: "string" };
-
-type PrimitiveType = NumberType | BooleanType | NullType | StringType;
+export type NumberType = { type: "number" };
+export type BooleanType = { type: "boolean" };
+export type NullType = { type: "null" };
+export type StringType = { type: "string" };
 
 type PrimitiveValue =
   | (NumberType & { value: number })

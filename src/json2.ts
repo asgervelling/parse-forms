@@ -16,6 +16,7 @@ import {
   Parser,
   letters,
 } from "arcsecond";
+import { JSONValue, StringType } from "./discUnExperiment";
 
 export const escapedQuote = sequenceOf([str("\\"), anyOfString(`"'`)]).map(
   (x) => x.join("")
@@ -25,7 +26,13 @@ export const parseString = sequenceOf([
   char('"'),
   many(choice([escapedQuote, anyCharExcept(char('"'))])).map((x) => x.join("")),
   char('"'),
-]).map(([_, result]) => result);
+]).map(([_, x]) => {
+  const result: JSONValue = {
+    type: "string",
+    value: x,
+  };
+  return result;
+});
 
 export const orEmptyString = (parser: Parser<string, string, any>) =>
   possibly(parser).map((x) => (x ? x : ""));
