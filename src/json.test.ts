@@ -4,6 +4,7 @@ import {
   orEmptyString,
   parseString,
   whitespaceSurrounded,
+  commaSeparated,
 } from "./json";
 import { anyChar, ResultType, str } from "arcsecond";
 
@@ -83,5 +84,16 @@ describe("whiteSpaceSurrounded", () => {
   test("does not fail when there is no whitespace", () => {
     const result = whitespaceSurrounded(parseString).run(`"hello"`);
     expect(asSuccess(result).result).toEqual("hello");
+  });
+});
+
+describe("commaSeparated", () => {
+  test("successfully parses comma separated strings", () => {
+    const result = commaSeparated(parseString).run(`"hello","world"`);
+    expect(asSuccess(result).result).toEqual(["hello", "world"]);
+  });
+  test("successfully parses comma separated strings with whitespace", () => {
+    const result = commaSeparated(parseString).run(`"hello" , "world"`);
+    expect(asSuccess(result).result).toEqual(["hello", "world"]);
   });
 });

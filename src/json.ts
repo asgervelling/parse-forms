@@ -31,3 +31,5 @@ export const orEmptyString = (parser: Parser<string, string, any>) =>
 
 export const whitespaceSurrounded =
   between(optionalWhitespace)(optionalWhitespace);
+
+export const commaSeparated = sepBy(whitespaceSurrounded(char(",")));
