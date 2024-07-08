@@ -20,6 +20,7 @@ import {
   asJSONBool,
   asJSONNumber,
   asJSONObject,
+  jsonNull,
 } from "./jsonConstructors";
 
 export const parseJsonValue = recursiveParser(() =>
@@ -81,11 +82,6 @@ export const parseScientificForm = sequenceOf([
 ]).map((x) => asJSONNumber(x.join("")));
 
 export const parseNumber = choice([parseScientificForm, parseFloat, parseInt]);
-
-const jsonNull: JSONValue = {
-  type: "null",
-  value: null,
-};
 
 export const parseNull = str("null").map(() => jsonNull);
 
