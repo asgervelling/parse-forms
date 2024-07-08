@@ -11,47 +11,50 @@ type PrimitiveValue =
   | (NullType & { value: null })
   | (StringType & { value: string });
 
-type ArrayValue<T extends PrimitiveType> = {
+type ArrayValue = {
   type: "array";
-  arrayType: T["type"];
-  value: (T extends NumberType
-    ? number
-    : T extends BooleanType
-    ? boolean
-    : T extends NullType
-    ? null
-    : T extends StringType
-    ? string
-    : never)[];
+  value: JSONValue[];
 };
 
-// Example usage:
-type NumberArrayValue = ArrayValue<NumberType>; // { type: "array"; arrayType: "number"; value: number[] }
-type BooleanArrayValue = ArrayValue<BooleanType>; // { type: "array"; arrayType: "boolean"; value: boolean[] }
-type NullArrayValue = ArrayValue<NullType>; // { type: "array"; arrayType: "null"; value: null[] }
-type StringArrayValue = ArrayValue<StringType>; // { type: "array"; arrayType: "string"; value: string[] }
+type ObjectValue = {
+  type: "object";
+  value: Record<string, JSONValue>;
+};
 
-type JSONValue =
-  | { type: "number"; value: number }
-  | { type: "boolean"; value: boolean }
-  | { type: "null"; value: null }
-  | { type: "string"; value: string }
-  | { type: "array"; arrayType: "number"; value: number[] }
-  | { type: "array"; arrayType: "boolean"; value: boolean[] }
-  | { type: "array"; arrayType: "null"; value: null[] }
-  | { type: "array"; arrayType: "string"; value: string[] }
-  | { type: "" };
+export type JSONValue = PrimitiveValue | ArrayValue | ObjectValue;
 
 // Example usage of valid JSON values
 const numberValue: JSONValue = { type: "number", value: 2 };
 const booleanValue: JSONValue = { type: "boolean", value: true };
 const numberArrayValue: JSONValue = {
   type: "array",
-  arrayType: "number",
-  value: [1, 2, 3],
+  value: [
+    { type: "number", value: 1 },
+    { type: "number", value: 2 },
+    { type: "number", value: 3 },
+  ],
 };
-const nullArrayValue: JSONValue = {
+const nullArrayValue: ArrayValue = {
   type: "array",
-  arrayType: "null",
-  value: [null],
+  value: [{ type: "null", value: null }],
+};
+const recursiveJsonValue: JSONValue = {
+  type: "object",
+  value: {
+    numbers: {
+      type: "array",
+      value: [
+        // According to the JSON specification (RFC 8259),
+        // JSON arrays can contain elements of any type,
+        // and these elements can be of mixed types.
+        { type: "number", value: 1 },
+        {
+          type: "object",
+          value: {
+            name: { type: "string", value: "Bob" },
+          },
+        },
+      ],
+    },
+  },
 };

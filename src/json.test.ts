@@ -13,6 +13,7 @@ import {
   parseNumber,
   parseNull,
   parseArray,
+  keyValueSeparator,
 } from "./json";
 import { ResultType, str } from "arcsecond";
 
@@ -252,5 +253,20 @@ describe("parseArray", () => {
   test("successfully parses an array with whitespace", () => {
     const result = parseArray.run(`[ "hello" , "world" ]`);
     expect(asSuccess(result).result).toEqual(["hello", "world"]);
+  });
+});
+
+describe("keyValueSeparator", () => {
+  test("successfully parses a colon", () => {
+    const result = keyValueSeparator.run(`:`);
+    expect(asSuccess(result).result).toEqual(":");
+  });
+  test("successfully parses a colon with whitespace", () => {
+    const result = keyValueSeparator.run(` : `);
+    expect(asSuccess(result).result).toEqual(":");
+  });
+  test("fails to parse anything other than a colon", () => {
+    const result = keyValueSeparator.run(`hello`);
+    expect(result.isError).toBe(true);
   });
 });

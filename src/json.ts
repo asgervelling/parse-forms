@@ -60,7 +60,7 @@ export const parseFloat = sequenceOf([
 ]).map((x) => x.join(""));
 
 export const parseInt = sequenceOf([orEmptyString(plusOrMinus), digits]).map(
-  (x) => x.join("")
+  (x) => Number(x.join(""))
 );
 
 export const parseScientificForm = sequenceOf([
@@ -95,7 +95,7 @@ export const parseKeyValue = whitespaceSurrounded(
   sequenceOf([parseString, keyValueSeparator, parseJsonValue])
 ).map((x) => {
   const [key, _, value] = x as string[];
-  return [key, value];
+  return { [key]: value };
 });
 
 export const parseObject = between(whitespaceSurrounded(char("{")))(
