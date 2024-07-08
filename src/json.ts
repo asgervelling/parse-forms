@@ -46,3 +46,7 @@ export const parseFloat = sequenceOf([
   char("."),
   digits,
 ]).map((x) => x.join(""));
+
+export const parseInt = sequenceOf([orEmptyString(plusOrMinus), digits]).map(
+  (x) => x.join("")
+);

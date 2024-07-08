@@ -8,6 +8,7 @@ import {
   parseBool,
   plusOrMinus,
   parseFloat,
+  parseInt,
 } from "./json";
 import { anyChar, ResultType, str } from "arcsecond";
 
@@ -143,5 +144,20 @@ describe("parseFloat", () => {
   test("fails to parse a float without a decimal", () => {
     const result = parseFloat.run(`0`);
     expect(result.isError).toBe(true);
+  });
+});
+
+describe("parseInt", () => {
+  test("successfully parses a positive integer", () => {
+    const result = parseInt.run(`123`);
+    expect(asSuccess(result).result).toEqual("123");
+  });
+  test("successfully parses a negative integer", () => {
+    const result = parseInt.run(`-123`);
+    expect(asSuccess(result).result).toEqual("-123");
+  });
+  test("fails to parse a float (parses the int before the decimal point)", () => {
+    const result = parseInt.run(`123.456`);
+    expect(asSuccess(result).result).toEqual("123");
   });
 });
