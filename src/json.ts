@@ -73,12 +73,47 @@ export const parseNumber = choice([parseScientificForm, parseFloat, parseInt]);
 
 export const parseNull = str("null").map((x) => null);
 
-const keyValueSeparator = whitespaceSurrounded(char(":"));
-
 const parseJsonValue = recursiveParser(() =>
-  choice([parseNumber, parseBool, parseNull, parseString, parseArray])
+  choice([
+    parseNumber,
+    parseBool,
+    parseNull,
+    parseString,
+    parseArray,
+    parseObject,
+  ])
 );
 
 export const parseArray = between(whitespaceSurrounded(char("[")))(
   whitespaceSurrounded(char("]"))
 )(commaSeparated(parseJsonValue));
+
+export const keyValueSeparator = whitespaceSurrounded(char(":"));
+
+// Not tested. Needs a map function and I'm unsure which
+export const parseKeyValue = whitespaceSurrounded(
+  sequenceOf([parseString, keyValueSeparator, parseJsonValue])
+).map((x) => {
+  const [key, _, value] = x as string[];
+  return [key, value];
+});
+
+export const parseObject = between(whitespaceSurrounded(char("{")))(
+  whitespaceSurrounded(char("}"))
+)(commaSeparated(parseKeyValue));
+
+// Example usage of the JSON parser
+const json = `{
+  "name": "John Doe",
+  "age": 30,
+  "isStudent": false,
+  "grades": [90, 80, 85],
+  "address": {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "state": "IL"
+  }
+}`;
+
+const result = parseObject.run(json);
+console.log(result);
