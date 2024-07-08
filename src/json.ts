@@ -14,7 +14,19 @@ import {
   recursiveParser,
   anyCharExcept,
   Parser,
+  letters,
 } from "arcsecond";
+
+// Recursive definition for a JSON value
+// This is needed because parseArray & parseObject also internally refer to parseJsonValue
+// export const parseJsonValue = recursiveParser<string, string, any>(() => choice ([
+//   parseString,
+//   parseNumber,
+//   parseBool,
+//   parseNull,
+//   parseArray,
+//   parseObject,
+// ]));
 
 export const escapedQuote = sequenceOf([str("\\"), anyOfString(`"'`)]).map(
   (x) => x.join("")
@@ -58,3 +70,15 @@ export const parseScientificForm = sequenceOf([
 ]).map((x) => x.join(""));
 
 export const parseNumber = choice([parseScientificForm, parseFloat, parseInt]);
+
+export const parseNull = str("null").map((x) => null);
+
+const keyValueSeparator = whitespaceSurrounded(char(":"));
+
+const parseJsonValue = recursiveParser(() =>
+  choice([parseNumber, parseBool, parseNull, parseString, parseArray])
+);
+
+export const parseArray = between(whitespaceSurrounded(char("[")))(
+  whitespaceSurrounded(char("]"))
+)(commaSeparated(parseJsonValue));

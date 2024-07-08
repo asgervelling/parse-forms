@@ -11,6 +11,8 @@ import {
   parseInt,
   parseScientificForm,
   parseNumber,
+  parseNull,
+  parseArray,
 } from "./json";
 import { ResultType, str } from "arcsecond";
 
@@ -219,5 +221,36 @@ describe("parseNumber", () => {
   test("successfully parses a negative integer in scientific notation", () => {
     const result = parseNumber.run(`-123e789`);
     expect(asSuccess(result).result).toEqual("-123e789");
+  });
+});
+
+describe("parseNull", () => {
+  test("successfully parses null", () => {
+    const result = parseNull.run(`null`);
+    console.log(result);
+    expect(asSuccess(result).result).toEqual(null);
+  });
+  test("fails to parse anything other than null", () => {
+    const result = parseNull.run(`hello`);
+    expect(result.isError).toBe(true);
+  });
+});
+
+describe("parseArray", () => {
+  test("successfully parses an empty array", () => {
+    const result = parseArray.run(`[]`);
+    expect(asSuccess(result).result).toEqual([]);
+  });
+  test("successfully parses an array with a single element", () => {
+    const result = parseArray.run(`["hello"]`);
+    expect(asSuccess(result).result).toEqual(["hello"]);
+  });
+  test("successfully parses an array with multiple elements", () => {
+    const result = parseArray.run(`["hello", "world"]`);
+    expect(asSuccess(result).result).toEqual(["hello", "world"]);
+  });
+  test("successfully parses an array with whitespace", () => {
+    const result = parseArray.run(`[ "hello" , "world" ]`);
+    expect(asSuccess(result).result).toEqual(["hello", "world"]);
   });
 });
