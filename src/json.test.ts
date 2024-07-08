@@ -1,4 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
+import { ResultType, str } from "arcsecond";
+
 import {
   escapedQuote,
   orEmptyString,
@@ -14,27 +16,25 @@ import {
   parseNull,
   parseArray,
   keyValueSeparator,
-  asJSONObject,
-  asJSONArray,
   parseObject,
 } from "./json";
-import { ResultType, str } from "arcsecond";
 import { JSONValue } from "./jsonTypes";
+import {
+  asJSONArray,
+  asJSONBool,
+  asJSONNumber,
+  asJSONObject,
+  asJSONString,
+  jsonNull,
+} from "./jsonConstructors";
 
 function asSuccess<T, E, D>(parseResult: ResultType<T, E, D>) {
   if (!parseResult.isError) {
     return parseResult;
   } else {
-    console.log("Failing:");
-    console.log(parseResult);
     throw parseResult.error;
   }
 }
-
-const asJSONString = (value: string): JSONValue => ({
-  type: "string",
-  value: value,
-});
 
 /*****************************
  * Parsers
@@ -73,11 +73,6 @@ describe("parseString", () => {
 });
 
 describe("parseBool", () => {
-  const asJSONBool = (value: boolean): JSONValue => ({
-    type: "boolean",
-    value: value,
-  });
-
   test("successfully parses true", () => {
     const result = parseBool.run(`true`);
     expect(asSuccess(result).result).toEqual(asJSONBool(true));
@@ -90,11 +85,6 @@ describe("parseBool", () => {
     const result = parseBool.run(`hello`);
     expect(result.isError).toBe(true);
   });
-});
-
-const asJSONNumber = (value: string): JSONValue => ({
-  type: "number",
-  value: Number(value),
 });
 
 describe("parseFloat", () => {
@@ -186,11 +176,6 @@ describe("parseNumber", () => {
 });
 
 describe("parseNull", () => {
-  const jsonNull: JSONValue = {
-    type: "null",
-    value: null,
-  };
-
   test("successfully parses null", () => {
     const result = parseNull.run(`null`);
     expect(asSuccess(result).result).toEqual(jsonNull);

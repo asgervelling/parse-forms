@@ -16,13 +16,13 @@ import {
   Parser,
   letters,
 } from "arcsecond";
+import { JSONValue, KeyValuePair, StringValue } from "./jsonTypes";
 import {
-  ArrayValue,
-  JSONValue,
-  KeyValuePair,
-  StringType,
-  StringValue,
-} from "./jsonTypes";
+  asJSONArray,
+  asJSONBool,
+  asJSONNumber,
+  asJSONObject,
+} from "./jsonConstructors";
 
 export const parseJsonValue = recursiveParser(() =>
   choice([
@@ -59,38 +59,28 @@ export const whitespaceSurrounded =
 
 export const commaSeparated = sepBy(whitespaceSurrounded(char(",")));
 
-const asJSONBool = (value: boolean): JSONValue => ({
-  type: "boolean",
-  value: value,
-});
-
 export const parseBool = choice([str("true"), str("false")]).map((x) =>
   x === "true" ? asJSONBool(true) : asJSONBool(false)
 );
 
 export const plusOrMinus = anyOfString("+-");
 
-const asJSONNumber = (value: number): JSONValue => ({
-  type: "number",
-  value: value,
-});
-
 export const parseFloat = sequenceOf([
   orEmptyString(plusOrMinus),
   digits,
   char("."),
   digits,
-]).map((x) => asJSONNumber(Number(x.join(""))));
+]).map((x) => asJSONNumber(x.join("")));
 
 export const parseInt = sequenceOf([orEmptyString(plusOrMinus), digits]).map(
-  (x) => asJSONNumber(Number(x.join("")))
+  (x) => asJSONNumber(x.join(""))
 );
 
 export const parseScientificForm = sequenceOf([
   choice([parseFloat, parseInt]).map((x) => x.value),
   anyOfString("eE"),
   choice([parseFloat, parseInt]).map((x) => x.value),
-]).map((x) => asJSONNumber(Number(x.join(""))));
+]).map((x) => asJSONNumber(x.join("")));
 
 export const parseNumber = choice([parseScientificForm, parseFloat, parseInt]);
 
@@ -100,11 +90,6 @@ const jsonNull: JSONValue = {
 };
 
 export const parseNull = str("null").map(() => jsonNull);
-
-export const asJSONArray = (values: JSONValue[]): JSONValue => ({
-  type: "array",
-  value: values.length > 0 ? values : [],
-});
 
 export const parseArray = between(whitespaceSurrounded(char("[")))(
   whitespaceSurrounded(char("]"))
@@ -122,18 +107,6 @@ export const parseKeyValue = whitespaceSurrounded(
     return { [key.value]: value } as KeyValuePair;
   })
 );
-
-export const asJSONObject = (keyValuePairs: KeyValuePair[]): JSONValue => {
-  const objValue: Record<string, JSONValue> = {};
-  keyValuePairs.forEach((kv) => {
-    const key = Object.keys(kv)[0];
-    objValue[key] = kv[key];
-  });
-  return {
-    type: "object",
-    value: objValue,
-  } as JSONValue;
-};
 
 export const parseObject = between(whitespaceSurrounded(char("{")))(
   whitespaceSurrounded(char("}"))
