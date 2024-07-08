@@ -6,6 +6,7 @@ import {
   whitespaceSurrounded,
   commaSeparated,
   parseBool,
+  plusOrMinus,
 } from "./json";
 import { anyChar, ResultType, str } from "arcsecond";
 
@@ -110,6 +111,21 @@ describe("parseBool", () => {
   });
   test("fails to parse anything other than true or false", () => {
     const result = parseBool.run(`hello`);
+    expect(result.isError).toBe(true);
+  });
+});
+
+describe("plusOrMinus", () => {
+  test("successfully parses +", () => {
+    const result = plusOrMinus.run(`+`);
+    expect(asSuccess(result).result).toEqual("+");
+  });
+  test("successfully parses -", () => {
+    const result = plusOrMinus.run(`-`);
+    expect(asSuccess(result).result).toEqual("-");
+  });
+  test("fails to parse anything other than + or -", () => {
+    const result = plusOrMinus.run(`hello`);
     expect(result.isError).toBe(true);
   });
 });
