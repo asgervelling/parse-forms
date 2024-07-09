@@ -1,9 +1,5 @@
 "use client";
-// Example from the masters themselves:
-// https://www.react-hook-form.com/api/useform/control/
-// Specifically https://codesandbox.io/s/react-hook-form-v6-controller-ts-jwyzw
-
-import { DefaultValues, SubmitHandler, useForm } from "react-hook-form";
+import { DefaultValues, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 
 // Let's say this is the form we are generating code for:
@@ -24,12 +20,15 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>;
 
-const defaultValues: DefaultValues<FormValues> = {
-  signUpForNewsletter: false,
-  // The other fields are not really made for having defaults,
-  // but we'll leave that decision to the user
+const onSubmit: SubmitHandler<FormValues> = (values) => {
+  console.log(`{
+    name:                 ${values.name}
+    age:                  ${values.age}  
+    signUpForNewsletter:  ${values.signUpForNewsletter}
+    email:                ${values.email}
+  }`);
 };
 
-const onSubmit: SubmitHandler<FormValues> = (data) => {
-  console.log(JSON.stringify(data, null, 2));
+type Props = {
+  defaultValues: DefaultValues<FormValues>;
 };
