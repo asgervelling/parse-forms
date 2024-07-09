@@ -11,13 +11,12 @@ export function main() {
 
   console.log(`Formatting JSON file: ${filename}`);
 
-  // Read the file
   const content = fs.readFileSync(filename, "utf-8");
   console.log("Original content:");
   console.log(content);
 
   console.log("Formatted content:");
-  console.log(JSON.stringify(JSON.parse(content), null, 2));
+  console.log(JSON.stringify(JSON.parse(content), null, 2)); // Todo: Use the walk example to implement this
 }
 
 main();

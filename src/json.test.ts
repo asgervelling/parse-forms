@@ -17,6 +17,7 @@ import {
   parseArray,
   keyValueSeparator,
   parseObject,
+  parseKeyValue,
 } from "./json";
 import { JSONValue } from "./jsonTypes";
 import {
@@ -218,6 +219,33 @@ describe("parseArray", () => {
     });
   });
 });
+
+describe("parseKeyValue", () => {
+  test("successfully parses a key-value pair", () => {
+    const result = parseKeyValue.run(`"key": "value"`);
+    expect(asSuccess(result).result).toEqual({
+      key: { type: "string", value: "value" },
+    });
+  });
+  test("successfully parses a key-value pair with whitespace", () => {
+    const result = parseKeyValue.run(` "mykey" : "myvalue" `);
+    expect(asSuccess(result).result).toEqual({
+      mykey: { type: "string", value: "myvalue" },
+    });
+  });
+  test("fails to parse a key-value pair without a colon", () => {
+    const result = parseKeyValue.run(`"key" "value"`);
+    expect(result.isError).toBe(true);
+  });
+  test("fails to parse a key-value pair without a key", () => {
+    const result = parseKeyValue.run(`: "value"`);
+    expect(result.isError).toBe(true);
+  });
+  test("fails to parse a key-value pair without a value", () => {
+    const result = parseKeyValue.run(`"key":`);
+    expect(result.isError).toBe(true);
+  });
+})
 
 describe("parseObject", () => {
   test("", () => {
