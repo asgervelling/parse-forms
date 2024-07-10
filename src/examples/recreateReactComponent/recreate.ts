@@ -2,7 +2,8 @@ import ts, { factory } from "typescript";
 import * as stmts from "./statements";
 import { br } from "./statements";
 
-// Create an array of statements, including the add function
+// A naive first attempt at generating code
+// to recreate the FormComponent.ts file, so very hardcoded
 const statements: readonly ts.Statement[] = [
   stmts.useClient(),
   stmts.imports.reactHookForm(),
